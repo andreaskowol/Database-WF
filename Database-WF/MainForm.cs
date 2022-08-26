@@ -15,6 +15,7 @@ namespace Database_WF
     {
         List<IPerson> people = new();
         readonly IDataAccess db = Factory.CreateDataAccess();
+        long elapsedMs = 0;
         int selectedIndex = -1;
         readonly IPerson _person;
 
@@ -34,6 +35,7 @@ namespace Database_WF
             listBox.DataSource = people;
             listBox.DisplayMember = "FullInfo";
             lblTotalRecords.Text = $"Total records: {people.Count}";
+            lblElapsedMs.Text = $"Last operation took: {elapsedMs}ms";
             listBox.SelectedItems.Clear();
         }
 
@@ -42,31 +44,45 @@ namespace Database_WF
             tbFirstName.Text = "";
             tbLastName.Text = "";
             nudAge.Value = 0;
+            lblElapsedMs.Text = $"Last operation took: {elapsedMs}ms";
         }
 
-        private void BtnSearch_Click(object sender, EventArgs e)
+        private async void BtnSearch_Click(object sender, EventArgs e)
         {
             string searchPhrase = tbSearch.Text;
 
             if (searchPhrase == "")
-                people = db.Get().ToList();
+            {
+                var watch = System.Diagnostics.Stopwatch.StartNew();
+                var result = await db.GetAsync();
+                watch.Stop();
+                elapsedMs = watch.ElapsedMilliseconds;
+
+                people = result.ToList();
+            }
+
             else
             {
                 Regex reg = new("[({!@#$%^&*};:'',<.>/?)]");
                 searchPhrase = reg.Replace(searchPhrase, string.Empty);
                 var searchElements = searchPhrase.Split(" ").ToList();
 
-                people = db.GetBySearch(
+                var watch = System.Diagnostics.Stopwatch.StartNew();
+                var result = await db.GetBySearch(
                    searchElements.FirstOrDefault(s => s.All(char.IsLetter)),
                    searchElements.Where(s => s.All(char.IsLetter)).Count() <= 1 ? "" : searchElements.Where(s => s.All(char.IsLetter)).Skip(1).First(),
                    !searchElements.Where(n => int.TryParse(n, out int parsed) == true).Any() ?
                                             null : Int32.Parse(searchElements.Where(n => Int32.TryParse(n, out int parsed) == true).First())
-                   ).ToList();
+                   );
+                watch.Stop();
+                elapsedMs = watch.ElapsedMilliseconds;
+
+                people = result.ToList();
             }
             UpdateListBox();
         }
 
-        private void BtnInsert_Click(object sender, EventArgs e)
+        private async void BtnInsert_Click(object sender, EventArgs e)
         {
             bool result = false;
             var validatedList = ValidateInputString.ValidateFields(string.Join(" ", tbLastName.Text, tbFirstName.Text, nudAge.Value.ToString()));
@@ -76,7 +92,11 @@ namespace Database_WF
                 _person.FirstName = validatedList[1];
                 _person.LastName = validatedList[0];
                 _person.Age = Int32.Parse(validatedList[2]);
-                result = db.Insert(_person);
+
+                var watch = System.Diagnostics.Stopwatch.StartNew();
+                result = await db.Insert(_person);
+                watch.Stop();
+                elapsedMs = watch.ElapsedMilliseconds;
             }
 
             if (result)
@@ -86,7 +106,7 @@ namespace Database_WF
             ClearInsertTextBoxes();
         }
 
-        private void BtnUpdate_Click(object sender, EventArgs e)
+        private async void BtnUpdate_Click(object sender, EventArgs e)
         {
             var validatedList = ValidateInputString.ValidateFields(string.Join(" ", tbLastName.Text, tbFirstName.Text, nudAge.Value.ToString()));
 
@@ -97,7 +117,10 @@ namespace Database_WF
                 _person.LastName = validatedList[0];
                 _person.Age = Int32.Parse(validatedList[2]);
 
-                var result = db.Update(_person);
+                var watch = System.Diagnostics.Stopwatch.StartNew();
+                var result = await db.Update(_person);
+                watch.Stop();
+                elapsedMs = watch.ElapsedMilliseconds;
 
                 StatusUpdate.LabelUpdate(result, lbStatus);
 
@@ -137,7 +160,7 @@ namespace Database_WF
             }
         }
 
-        private void BtnInsertTxt_Click(object sender, EventArgs e)
+        private async void BtnInsertTxt_Click(object sender, EventArgs e)
         {
             StreamReader sr = new(tbPath.Text);
 
@@ -151,7 +174,10 @@ namespace Database_WF
                 _person.LastName = validatedList[0];
                 _person.Age = Int32.Parse(validatedList[2]);
 
-                bool result = db.Insert(_person);
+                var watch = System.Diagnostics.Stopwatch.StartNew();
+                bool result = await db.Insert(_person);
+                watch.Stop();
+                elapsedMs = watch.ElapsedMilliseconds;
 
                 StatusUpdate.LabelUpdate(result, lbStatus);
                 tbPath.Text = "";
@@ -161,9 +187,12 @@ namespace Database_WF
             }
         }
 
-        private void BtnDelete_Click(object sender, EventArgs e)
+        private async void BtnDelete_Click(object sender, EventArgs e)
         {
-            var result = db.Delete(people[selectedIndex].PersonId);
+            var watch = System.Diagnostics.Stopwatch.StartNew();
+            var result = await db.Delete(people[selectedIndex].PersonId);
+            watch.Stop();
+            elapsedMs = watch.ElapsedMilliseconds;
 
             StatusUpdate.LabelUpdate(result, lbStatus);
 

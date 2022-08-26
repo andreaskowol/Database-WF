@@ -2,10 +2,10 @@
 {
     public interface IDataAccess
     {
-        IEnumerable<IPerson> Get();
-        bool Insert(IPerson person);
-        bool Update(IPerson person);
-        bool Delete(int personId);
-        IEnumerable<IPerson> GetBySearch(string? searchPhrase1, string searchPhrase2, int? age);
+        Task<bool> Delete(int personId);
+        Task<IEnumerable<IPerson>> GetAsync();
+        Task<IEnumerable<IPerson>> GetBySearch(string? searchPhrase1, string searchPhrase2, int? age);
+        Task<bool> Insert(IPerson person);
+        Task<bool> Update(IPerson person);
     }
 }

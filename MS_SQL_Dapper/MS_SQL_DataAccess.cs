@@ -15,60 +15,49 @@ namespace MS_SQL_Dapper
         }
 
 
-        public bool Delete(int personId)
+        public async Task<bool> Delete(int personId)
         {
-            using (IDbConnection connection = new System.Data.SqlClient.SqlConnection(ConnectionHelper.ConnectionString("Dapper-WF")))
-            {
-                IPerson deletePerson = _person;
-                deletePerson.PersonId = personId;
+            using IDbConnection connection = new System.Data.SqlClient.SqlConnection(ConnectionHelper.ConnectionString("Dapper-WF"));
 
-                var result = connection.Execute("dbo.DeletePerson @PersonId", deletePerson);
+            IPerson deletePerson = _person;
+            deletePerson.PersonId = personId;
 
-                return result == 1;
-            }
+            return await connection.ExecuteAsync("dbo.DeletePerson @PersonId", deletePerson) == 1;
         }
 
-        public IEnumerable<IPerson> Get()
+        public async Task<IEnumerable<IPerson>> GetAsync()
         {
-            using (IDbConnection connection = new System.Data.SqlClient.SqlConnection(ConnectionHelper.ConnectionString("Dapper-WF")))
-            {
-                return connection.Query<Person>("dbo.GetAll").ToList();
-            }
+            using IDbConnection connection = new System.Data.SqlClient.SqlConnection(ConnectionHelper.ConnectionString("Dapper-WF"));
+
+            return await connection.QueryAsync<Person>("dbo.GetAll");
         }
 
-        public IEnumerable<IPerson> GetBySearch(string? searchPhrase1, string searchPhrase2, int? age)
+        public async Task<IEnumerable<IPerson>> GetBySearch(string? searchPhrase1, string searchPhrase2, int? age)
         {
-            using (IDbConnection connection = new System.Data.SqlClient.SqlConnection(ConnectionHelper.ConnectionString("Dapper-WF")))
-            {
-                return connection.Query<Person>("dbo.SelectBySearchPhrase @SearchPhrase1, @SearchPhrase2, @Age",
-                    new
-                    {
-                        SearchPhrase1 = searchPhrase1,
-                        SearchPhrase2 = searchPhrase2,
-                        Age = age
-                    }).ToList();
-            }
+            using IDbConnection connection = new System.Data.SqlClient.SqlConnection(ConnectionHelper.ConnectionString("Dapper-WF"));
+
+            return await connection.QueryAsync<Person>("dbo.SelectBySearchPhrase @SearchPhrase1, @SearchPhrase2, @Age",
+                new
+                {
+                    SearchPhrase1 = searchPhrase1,
+                    SearchPhrase2 = searchPhrase2,
+                    Age = age
+                });
         }
 
 
-        public bool Insert(IPerson person)
+        public async Task<bool> Insert(IPerson person)
         {
-            using (IDbConnection connection = new System.Data.SqlClient.SqlConnection(ConnectionHelper.ConnectionString("Dapper-WF")))
-            {
-                var result = connection.Execute("dbo.InsertPerson @LastName, @FirstName, @Age", person);
+            using IDbConnection connection = new System.Data.SqlClient.SqlConnection(ConnectionHelper.ConnectionString("Dapper-WF"));
 
-                return result == 1;
-            }
+            return await connection.ExecuteAsync("dbo.InsertPerson @LastName, @FirstName, @Age", person) == 1;
         }
 
-        public bool Update(IPerson person)
+        public async Task<bool> Update(IPerson person)
         {
-            using (IDbConnection connection = new System.Data.SqlClient.SqlConnection(ConnectionHelper.ConnectionString("Dapper-WF")))
-            {
-                var result = connection.Execute("dbo.UpdatePerson @PersonId, @LastName, @FirstName, @Age", person);
+            using IDbConnection connection = new System.Data.SqlClient.SqlConnection(ConnectionHelper.ConnectionString("Dapper-WF"));
 
-                return result == 1;
-            }
+            return await connection.ExecuteAsync("dbo.UpdatePerson @PersonId, @LastName, @FirstName, @Age", person) == 1;
         }
     }
 }

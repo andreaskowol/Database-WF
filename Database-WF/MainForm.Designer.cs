@@ -46,6 +46,7 @@
             this.btnInsertTxt = new System.Windows.Forms.Button();
             this.btnBrowse = new System.Windows.Forms.Button();
             this.tbPath = new System.Windows.Forms.TextBox();
+            this.lblElapsedMs = new System.Windows.Forms.Label();
             this.groupBox1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.nudAge)).BeginInit();
             this.groupBox2.SuspendLayout();
@@ -77,7 +78,7 @@
             this.listBox.ItemHeight = 15;
             this.listBox.Location = new System.Drawing.Point(12, 12);
             this.listBox.Name = "listBox";
-            this.listBox.Size = new System.Drawing.Size(439, 409);
+            this.listBox.Size = new System.Drawing.Size(439, 394);
             this.listBox.TabIndex = 3;
             this.listBox.SelectedIndexChanged += new System.EventHandler(this.ListBox_SelectedIndexChanged);
             this.listBox.MouseDown += new System.Windows.Forms.MouseEventHandler(this.ListBox_MouseDown);
@@ -238,12 +239,21 @@
             this.tbPath.TabIndex = 0;
             this.tbPath.TextChanged += new System.EventHandler(this.TbPath_TextChanged);
             // 
+            // lblElapsedMs
+            // 
+            this.lblElapsedMs.AutoSize = true;
+            this.lblElapsedMs.Location = new System.Drawing.Point(12, 409);
+            this.lblElapsedMs.Name = "lblElapsedMs";
+            this.lblElapsedMs.Size = new System.Drawing.Size(115, 15);
+            this.lblElapsedMs.TabIndex = 14;
+            this.lblElapsedMs.Text = "Last operation took: ";
+            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
-            this.FormBorderStyle = FormBorderStyle.FixedSingle;
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(800, 450);
+            this.Controls.Add(this.lblElapsedMs);
             this.Controls.Add(this.groupBox3);
             this.Controls.Add(this.groupBox2);
             this.Controls.Add(this.groupBox1);
@@ -251,6 +261,7 @@
             this.Controls.Add(this.lbStatus);
             this.Controls.Add(this.listBox);
             this.Controls.Add(this.lblTotalRecords);
+            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             this.MaximizeBox = false;
             this.Name = "MainForm";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
@@ -286,5 +297,6 @@
         private NumericUpDown nudAge;
         private Button btnUpdate;
         private Button btnDelete;
+        private Label lblElapsedMs;
     }
 }
