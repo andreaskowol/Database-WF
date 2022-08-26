@@ -13,35 +13,35 @@ namespace MS_SQL_Entity_Framework
             _person = person;
         }
 
-        public bool Delete(int personId)
+        public async Task<bool> DeleteAsync(int personId)
         {
-            var result = context.People.SingleOrDefault(x => x.PersonId == personId);
+            var result = await Task.Run(() => context.People.FirstOrDefault(x => x.PersonId == personId));
 
             if (result != null)
             {
-                context.People.Remove(result);
-                var deleteResult = context.SaveChanges();
+                await Task.Run(() => context.People.Remove(result));
+                var deleteResult = await context.SaveChangesAsync();
 
                 return deleteResult == 1;
             }
             return false;
         }
 
-        public IEnumerable<IPerson> Get()
+        public async Task<IEnumerable<IPerson>> GetAsync()
         {
-            return context.People.ToList();
+            return await Task.Run(() => context.People.ToList());
         }
 
-        public IEnumerable<IPerson> GetBySearch(string? searchPhrase1, string searchPhrase2, int? age)
+        public async Task<IEnumerable<IPerson>> GetBySearchAsync(string? searchPhrase1, string searchPhrase2, int? age)
         {
-            return context.People
+            return await Task.Run(() => context.People
                     .Where(p => searchPhrase1 == null || p.FirstName.Contains(searchPhrase1) || p.LastName.Contains(searchPhrase1))
                     .Where(p => searchPhrase2 == "" || (p.FirstName.Contains(searchPhrase2) || p.LastName.Contains(searchPhrase2)))
                     .Where(p => age == null || p.Age == age)
-                    .ToList();
+                    .ToList());
         }
 
-        public bool Insert(IPerson person)
+        public async Task<bool> InsertAsync(IPerson person)
         {
             Person insertPerson = new()
             {
@@ -49,22 +49,22 @@ namespace MS_SQL_Entity_Framework
                 LastName = person.LastName,
                 Age = person.Age
             };
-            _ = context.People.Add(insertPerson);
-            var updateresult = context.SaveChanges();
+            _ = await context.People.AddAsync(insertPerson);
+            var updateresult = await context.SaveChangesAsync();
 
             return updateresult == 1;
         }
 
-        public bool Update(IPerson person)
+        public async Task<bool> UpdateAsync(IPerson person)
         {
-            var result = context.People.SingleOrDefault(x => x.PersonId == person.PersonId);
+            var result = await Task.Run(() => context.People.SingleOrDefault(x => x.PersonId == person.PersonId));
 
             if (result != null)
             {
                 result.Age = person.Age;
                 result.FirstName = person?.FirstName;
                 result.LastName = person?.LastName;
-                var updateResult = context.SaveChanges();
+                var updateResult = await context.SaveChangesAsync();
 
                 return updateResult == 1;
             }

@@ -1,11 +1,11 @@
-﻿// Use for Dapper
-using MS_SQL_Dapper;
-using MS_SQL_Dapper.Interfaces;
+﻿//// Use for Dapper
+//using MS_SQL_Dapper;
+//using MS_SQL_Dapper.Interfaces;
 
-//// Use for Entity Framework
-//using MS_SQL_Entity_Framework;
-//using MS_SQL_Entity_Framework.Interfaces;
-//using MS_SQL_Entity_Framework.Models;
+// Use for Entity Framework
+using MS_SQL_Entity_Framework;
+using MS_SQL_Entity_Framework.Interfaces;
+using MS_SQL_Entity_Framework.Models;
 
 
 namespace Database_WF

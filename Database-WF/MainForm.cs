@@ -1,11 +1,11 @@
 // Use for Dapper
-using MS_SQL_Dapper;
-using MS_SQL_Dapper.Interfaces;
+//using MS_SQL_Dapper;
+//using MS_SQL_Dapper.Interfaces;
 
-//// Use for Entity Framework
-//using MS_SQL_Entity_Framework;
-//using MS_SQL_Entity_Framework.Interfaces;
-//using MS_SQL_Entity_Framework.Models;
+// Use for Entity Framework
+using MS_SQL_Entity_Framework;
+using MS_SQL_Entity_Framework.Interfaces;
+using MS_SQL_Entity_Framework.Models;
 
 using System.Text.RegularExpressions;
 
@@ -68,7 +68,7 @@ namespace Database_WF
                 var searchElements = searchPhrase.Split(" ").ToList();
 
                 var watch = System.Diagnostics.Stopwatch.StartNew();
-                var result = await db.GetBySearch(
+                var result = await db.GetBySearchAsync(
                    searchElements.FirstOrDefault(s => s.All(char.IsLetter)),
                    searchElements.Where(s => s.All(char.IsLetter)).Count() <= 1 ? "" : searchElements.Where(s => s.All(char.IsLetter)).Skip(1).First(),
                    !searchElements.Where(n => int.TryParse(n, out int parsed) == true).Any() ?
@@ -94,7 +94,7 @@ namespace Database_WF
                 _person.Age = Int32.Parse(validatedList[2]);
 
                 var watch = System.Diagnostics.Stopwatch.StartNew();
-                result = await db.Insert(_person);
+                result = await db.InsertAsync(_person);
                 watch.Stop();
                 elapsedMs = watch.ElapsedMilliseconds;
             }
@@ -118,7 +118,7 @@ namespace Database_WF
                 _person.Age = Int32.Parse(validatedList[2]);
 
                 var watch = System.Diagnostics.Stopwatch.StartNew();
-                var result = await db.Update(_person);
+                var result = await db.UpdateAsync(_person);
                 watch.Stop();
                 elapsedMs = watch.ElapsedMilliseconds;
 
@@ -175,7 +175,7 @@ namespace Database_WF
                 _person.Age = Int32.Parse(validatedList[2]);
 
                 var watch = System.Diagnostics.Stopwatch.StartNew();
-                bool result = await db.Insert(_person);
+                bool result = await db.InsertAsync(_person);
                 watch.Stop();
                 elapsedMs = watch.ElapsedMilliseconds;
 
@@ -190,7 +190,7 @@ namespace Database_WF
         private async void BtnDelete_Click(object sender, EventArgs e)
         {
             var watch = System.Diagnostics.Stopwatch.StartNew();
-            var result = await db.Delete(people[selectedIndex].PersonId);
+            var result = await db.DeleteAsync(people[selectedIndex].PersonId);
             watch.Stop();
             elapsedMs = watch.ElapsedMilliseconds;
 

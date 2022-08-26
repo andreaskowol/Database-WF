@@ -15,7 +15,7 @@ namespace MS_SQL_Dapper
         }
 
 
-        public async Task<bool> Delete(int personId)
+        public async Task<bool> DeleteAsync(int personId)
         {
             using IDbConnection connection = new System.Data.SqlClient.SqlConnection(ConnectionHelper.ConnectionString("Dapper-WF"));
 
@@ -32,7 +32,7 @@ namespace MS_SQL_Dapper
             return await connection.QueryAsync<Person>("dbo.GetAll");
         }
 
-        public async Task<IEnumerable<IPerson>> GetBySearch(string? searchPhrase1, string searchPhrase2, int? age)
+        public async Task<IEnumerable<IPerson>> GetBySearchAsync(string? searchPhrase1, string searchPhrase2, int? age)
         {
             using IDbConnection connection = new System.Data.SqlClient.SqlConnection(ConnectionHelper.ConnectionString("Dapper-WF"));
 
@@ -46,14 +46,14 @@ namespace MS_SQL_Dapper
         }
 
 
-        public async Task<bool> Insert(IPerson person)
+        public async Task<bool> InsertAsync(IPerson person)
         {
             using IDbConnection connection = new System.Data.SqlClient.SqlConnection(ConnectionHelper.ConnectionString("Dapper-WF"));
 
             return await connection.ExecuteAsync("dbo.InsertPerson @LastName, @FirstName, @Age", person) == 1;
         }
 
-        public async Task<bool> Update(IPerson person)
+        public async Task<bool> UpdateAsync(IPerson person)
         {
             using IDbConnection connection = new System.Data.SqlClient.SqlConnection(ConnectionHelper.ConnectionString("Dapper-WF"));
 
